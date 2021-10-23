@@ -16,35 +16,39 @@ class Game
   end
 
   def play_game
-    #introduction
+    introduction
     ask_info
     @turn = [@player1, @player2].sample
-    #play_round until @winner
-    8.times { play_round }
+    play_round until @winner
     summary
   end
 
   def ask_info
-    puts "\e[34mPlayer 1\e[0m please enter your name:"
+    puts "\e[32mPlayer 1\e[0m please enter your name:"
     @player1[:name] = gets.chomp
-    puts "Choose your color using the numbers above:"
+    puts "Choose your \e[32mcolor\e[0m using the numbers above:"
     p1_disc = player_move(1, 8)
     @player1[:disc] = DISCS[p1_disc]
     puts "\n\e[33mPlayer 2\e[0m please enter your name:"
     @player2[:name] = gets.chomp
-    puts "Choose a different color than #{@player1[:name]} using the numbers above:"
+    puts "Choose a different \e[33mcolor\e[0m than #{@player1[:name]} using the numbers above:"
     p2_disc = player_move(1, 8, p1_disc.to_i)
     @player2[:disc] = DISCS[p2_disc]
   end
 
   def play_round
-    puts "\n\e[34m════════ Round #{@round} ═══════\e[0m\n\n"
+    display_round_info
+    make_move
+    @winner = @board.winner?(@turn[:disc])
+    @round += 1
+    @turn = @turn == @player1 ? @player2 : @player1 unless @winner
+  end
+
+  def display_round_info
+    puts "\n\e[34m═══════ Round #{@round} ═══════\e[0m\n\n"
     puts "#{@turn[:name]}'s turn.\n\n"
     @board.display_board
     puts 'Enter a column to drop in your disc:'
-    make_move
-    @round += 1
-    @turn = @turn == @player1 ? @player2 : @player1 unless @winner
   end
 
   def make_move
@@ -63,7 +67,7 @@ class Game
   def player_move(min = 1, max = 7, taken = nil)
     loop do
       column = gets.chomp.to_i
-      verified_move = verify_move(column, taken)
+      verified_move = verify_move(column, taken, min, max)
       return verified_move if verified_move
 
       puts column == taken ? "\e[31mWhoops! #{taken} is already taken.\e[0m" : "\e[31mWhoops! Please enter a number between #{min} and #{max}.\e[0m"
@@ -85,7 +89,7 @@ class Game
   def introduction
     puts <<~HEREDOC
 
-      \e[31mCONNECT 4\e[0m
+      \e[31m━━━━━━━━━━━━━━━━━━━━━━━━━ CONNECT 4 ━━━━━━━━━━━━━━━━━━━━━━━━━━\e[0m
 
       Play command line Connect 4 against a friend.
       Be the first player to create a line of four to win!
