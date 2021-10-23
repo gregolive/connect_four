@@ -48,7 +48,7 @@ class Game
   def play_round
     display_round_info
     make_move
-    @winner = @board.winner?(@turn[:disc])
+    @winner = @board.winner?(@turn[:disc]) unless @round < 7
     @round += 1
     @turn = @turn == @player1 ? @player2 : @player1 unless @winner
   end
