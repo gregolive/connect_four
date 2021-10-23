@@ -1,14 +1,17 @@
 # frozen_string_literal: true
 
 class GameBoard
-  def initialize
-    @board = create_board
-  end
+  attr_reader :board
 
-  def create_board(rows = 6, cols = 7, disc = '⭕', board = [])
-    row = Array.new(cols, disc)
-    rows.times { board.push(row) }
-    board
+  EMPTY_BOARD = [ ['⭕','⭕','⭕','⭕','⭕','⭕','⭕'],
+                  ['⭕','⭕','⭕','⭕','⭕','⭕','⭕'],
+                  ['⭕','⭕','⭕','⭕','⭕','⭕','⭕'],
+                  ['⭕','⭕','⭕','⭕','⭕','⭕','⭕'],
+                  ['⭕','⭕','⭕','⭕','⭕','⭕','⭕'],
+                  ['⭕','⭕','⭕','⭕','⭕','⭕','⭕'] ]
+  
+  def initialize
+    @board = EMPTY_BOARD
   end
 
   def display_board
@@ -20,9 +23,8 @@ class GameBoard
     puts "┣━━━━━━━━━━━━━━━━━━━━━━┫\n┃  1  2  3  4  5  6  7 ┃\n┗━━━━━━━━━━━━━━━━━━━━━━┛"
   end
 
-  def update_board(disc, col)
+  def update_board(disc, col, row)
     col -= 1
-    p row = find_space(col)
     @board[row][col] = disc
   end
   
