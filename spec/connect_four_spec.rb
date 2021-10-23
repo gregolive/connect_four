@@ -58,11 +58,39 @@ describe Game do
       end
     end
 
-
+    context 'when given a valid input that is already taken' do
+      it 'returns nil' do
+        input = 3
+        taken = 3
+        expect(game_move_verify.verify_move(input, taken)).to be_nil
+      end
+    end
   end
 end
 
 describe GameBoard do
+  describe '#find_space' do
+    subject(:board_search) { described_class.new}
+
+    context 'when a column is empty' do
+      it 'returns the bottom row index' do
+        col = 2
+        bottom_row = board_search.board.length - 1
+        expect(board_search.find_space(col)).to eq(bottom_row)
+      end
+    end
+
+    context 'when a column is not empty but has free spaces' do
+      it 'returns the row index of the lowest free space' do
+        disc = '🔵'
+        col = 2
+        board_search.board[5][col] = disc
+        expected_row = board_search.board.length - 2
+        expect(board_search.find_space(col)).to eq(expected_row)
+      end
+    end
+  end
+
   describe '#update_board' do
     subject(:new_board) { described_class.new}
 
@@ -72,7 +100,7 @@ describe GameBoard do
         col = 2
         row = new_board.board.length - 1
         new_board.update_board(disc, col, row)
-        expect(new_board.board[row][col - 1]).to eq(disc)
+        expect(new_board.board[row][col]).to eq(disc)
       end
     end
 
@@ -85,7 +113,7 @@ describe GameBoard do
           new_board.update_board(disc, col, row)
           row -= 1
         end
-        expect(new_board.board[row + 1][col - 1]).to eq(disc)
+        expect(new_board.board[row + 1][col]).to eq(disc)
       end
     end
   end

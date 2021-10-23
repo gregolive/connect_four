@@ -23,14 +23,13 @@ class GameBoard
     puts "┣━━━━━━━━━━━━━━━━━━━━━━┫\n┃  1  2  3  4  5  6  7 ┃\n┗━━━━━━━━━━━━━━━━━━━━━━┛"
   end
 
-  def update_board(disc, col, row)
-    col -= 1
-    @board[row][col] = disc
-  end
-  
   def find_space(col)
     rows = Array.new
     @board.each_with_index { |row, index| rows.push(index) if row[col] == '⭕' }
     rows.last
+  end
+
+  def update_board(disc, col, row)
+    @board[row][col] = disc
   end
 end
