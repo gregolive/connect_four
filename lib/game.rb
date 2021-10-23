@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
-require_relative '../lib/board.rb'
+require_relative '../lib/board'
 
 # Run a new game of connect four
 class Game
-  DISCS = {1 => '🔴', 2 => '🔵', 3 => '🟠', 4 => '🟡', 5 => '🟢', 6 => '🟣', 7 => '⚫', 8 => '⚪'}
+  DISCS = { 1 => '🔴', 2 => '🔵', 3 => '🟠', 4 => '🟡', 5 => '🟢', 6 => '🟣', 7 => '⚫', 8 => '⚪' }.freeze
 
   def initialize
     @board = GameBoard.new
     @round = 1
     @winner = false
-    @player1 = Hash.new
-    @player2 = Hash.new
+    @player1 = {}
+    @player2 = {}
     play_game
   end
 
@@ -24,15 +24,24 @@ class Game
   end
 
   def ask_info
+    ask_p1
+    p1_disc = DISCS.key(@player1[:disc])
+    ask_p2(p1_disc)
+  end
+
+  def ask_p1
     puts "\e[32mPlayer 1\e[0m please enter your name:"
     @player1[:name] = gets.chomp
     puts "Choose your \e[32mcolor\e[0m using the numbers above:"
     p1_disc = player_move(1, 8)
     @player1[:disc] = DISCS[p1_disc]
+  end
+
+  def ask_p2(p1_disc)
     puts "\n\e[33mPlayer 2\e[0m please enter your name:"
     @player2[:name] = gets.chomp
     puts "Choose a different \e[33mcolor\e[0m than #{@player1[:name]} using the numbers above:"
-    p2_disc = player_move(1, 8, p1_disc.to_i)
+    p2_disc = player_move(1, 8, p1_disc)
     @player2[:disc] = DISCS[p2_disc]
   end
 
@@ -70,7 +79,11 @@ class Game
       verified_move = verify_move(column, taken, min, max)
       return verified_move if verified_move
 
-      puts column == taken ? "\e[31mWhoops! #{taken} is already taken.\e[0m" : "\e[31mWhoops! Please enter a number between #{min} and #{max}.\e[0m"
+      if column == taken
+        puts "\e[31mWhoops! #{taken} is already taken.\e[0m"
+      else
+        puts "\e[31mWhoops! Please enter a number between #{min} and #{max}.\e[0m"
+      end
     end
   end
 
@@ -98,5 +111,4 @@ class Game
 
     HEREDOC
   end
-
 end

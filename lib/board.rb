@@ -1,22 +1,23 @@
 # frozen_string_literal: true
 
+# Control the connect four game board
 class GameBoard
   attr_reader :board
 
-  EMPTY_BOARD = [ ['⭕','⭕','⭕','⭕','⭕','⭕','⭕'],
-                  ['⭕','⭕','⭕','⭕','⭕','⭕','⭕'],
-                  ['⭕','⭕','⭕','⭕','⭕','⭕','⭕'],
-                  ['⭕','⭕','⭕','⭕','⭕','⭕','⭕'],
-                  ['⭕','⭕','⭕','⭕','⭕','⭕','⭕'],
-                  ['⭕','⭕','⭕','⭕','⭕','⭕','⭕'] ]
-  
-  def initialize
-    @board = EMPTY_BOARD
+  EMPTY_BOARD = [['⭕', '⭕', '⭕', '⭕', '⭕', '⭕', '⭕'],
+                 ['⭕', '⭕', '⭕', '⭕', '⭕', '⭕', '⭕'],
+                 ['⭕', '⭕', '⭕', '⭕', '⭕', '⭕', '⭕'],
+                 ['⭕', '⭕', '⭕', '⭕', '⭕', '⭕', '⭕'],
+                 ['⭕', '⭕', '⭕', '⭕', '⭕', '⭕', '⭕'],
+                 ['⭕', '⭕', '⭕', '⭕', '⭕', '⭕', '⭕']].freeze
+
+  def initialize(board = EMPTY_BOARD)
+    @board = board
   end
 
   def display_board
     puts '┏━━━━━━━━━━━━━━━━━━━━━━┓'
-    @board.each do |row| 
+    @board.each do |row|
       print '┃'
       row.each_with_index { |disc, index| print index == 6 ? " #{disc} ┃\n" : " #{disc}" }
     end
@@ -24,7 +25,7 @@ class GameBoard
   end
 
   def find_space(col)
-    rows = Array.new
+    rows = []
     @board.each_with_index { |row, index| rows.push(index) if row[col] == '⭕' }
     rows.last
   end
@@ -48,30 +49,30 @@ class GameBoard
     diagonals = diagonals_from_left + diagonals_from_right
     delete_small_sections(diagonals)
   end
-  
+
   def diagonals_from_right(padded_matrix = [])
     padding = @board.size - 1
-  
-    @board.each do |row|
-        inverse_padding = @board.size - padding
-        padded_matrix << ([nil] * inverse_padding) + row + ([nil] * padding)
-        padding -= 1    
-    end
-    padded_matrix.transpose.map(&:compact)
-  end
-  
-  def diagonals_from_left(padded_matrix = [])
-    padding = 0
-  
+
     @board.each do |row|
       inverse_padding = @board.size - padding
       padded_matrix << ([nil] * inverse_padding) + row + ([nil] * padding)
-      padding += 1    
+      padding -= 1
+    end
+    padded_matrix.transpose.map(&:compact)
+  end
+
+  def diagonals_from_left(padded_matrix = [])
+    padding = 0
+
+    @board.each do |row|
+      inverse_padding = @board.size - padding
+      padded_matrix << ([nil] * inverse_padding) + row + ([nil] * padding)
+      padding += 1
     end
     padded_matrix.transpose.map(&:compact)
   end
 
   def delete_small_sections(array)
-    array.delete_if {|sub| sub.length < 4 }
+    array.delete_if { |sub| sub.length < 4 }
   end
 end

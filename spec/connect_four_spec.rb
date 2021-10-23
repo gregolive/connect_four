@@ -2,13 +2,15 @@
 
 # Comment out play_game from #initialize in Game class to test
 
-require_relative '../lib/connect_four.rb'
-require_relative '../lib/game.rb'
+require_relative '../lib/connect_four'
+require_relative '../lib/game'
+
+# rubocop: disable Metrics/BlockLength
 
 describe Game do
   describe '#player_move' do
     subject(:game_move) { described_class.new }
-    
+
     context 'when the player enters a valid move' do
       before do
         input = '3'
@@ -43,7 +45,7 @@ describe Game do
 
   describe '#verify_move' do
     subject(:game_move_verify) { described_class.new }
-    
+
     context 'when given a valid input and there are no taken numbers' do
       it 'returns the input' do
         input = 6
@@ -72,7 +74,7 @@ end
 
 describe GameBoard do
   describe '#find_space' do
-    subject(:board_search) { described_class.new}
+    subject(:board_search) { described_class.new }
 
     context 'when a column is empty' do
       it 'returns the bottom row index' do
@@ -94,7 +96,7 @@ describe GameBoard do
   end
 
   describe '#update_board' do
-    subject(:new_board) { described_class.new}
+    subject(:new_board) { described_class.new }
 
     context 'when the column is empty' do
       it 'adds the disc to the bottom of the column' do
@@ -111,7 +113,7 @@ describe GameBoard do
         disc = '🔵'
         col = 2
         row = new_board.board.length - 1
-        3.times do 
+        3.times do
           new_board.update_board(disc, col, row)
           row -= 1
         end
@@ -135,7 +137,7 @@ describe GameBoard do
         disc = '🔵'
         col = 2
         row = board_winner.board.length - 1
-        4.times do 
+        4.times do
           board_winner.update_board(disc, col, row)
           row -= 1
         end
@@ -168,7 +170,7 @@ describe GameBoard do
 
   describe '#delete_small_sections' do
     context 'when given an embedded array' do
-      subject(:board_clean) { described_class.new([[1, 2, 3, 4], [1, 2, 3, 4, 5], [1, 2], [1, 2, 3], [1]])}
+      subject(:board_clean) { described_class.new([[1, 2, 3, 4], [1, 2, 3, 4, 5], [1, 2], [1, 2, 3], [1]]) }
       it 'removes the subarrays with less than 4 elements' do
         result = [[1, 2, 3, 4], [1, 2, 3, 4, 5]]
         expect(board_clean.delete_small_sections(board_clean.board)).to eq(result)
@@ -176,3 +178,5 @@ describe GameBoard do
     end
   end
 end
+
+# rubocop: enable Metrics/BlockLength
