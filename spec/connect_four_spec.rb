@@ -42,22 +42,51 @@ describe Game do
   describe '#verify_move' do
     subject(:game_move_verify) { described_class.new }
     
-    context 'when given a valid input' do
+    context 'when given a valid input and there are no taken numbers' do
       it 'returns the input' do
         input = 6
-        expect(game_move_verify.verify_move(input)).to eq(input)
+        taken = nil
+        expect(game_move_verify.verify_move(input, taken)).to eq(input)
       end
     end
 
     context 'when given an invalid input' do
       it 'returns nil' do
         input = 23
-        expect(game_move_verify.verify_move(input)).to be_nil
+        taken = nil
+        expect(game_move_verify.verify_move(input, taken)).to be_nil
       end
     end
+
+
   end
 end
 
 describe GameBoard do
-  
+  describe '#update_board' do
+    subject(:new_board) { described_class.new}
+
+    context 'when the column is empty' do
+      it 'adds the disc to the bottom of the column' do
+        disc = '🔵'
+        col = 2
+        row = new_board.board.length - 1
+        new_board.update_board(disc, col, row)
+        expect(new_board.board[row][col - 1]).to eq(disc)
+      end
+    end
+
+    context 'when a column is not empty but has free spaces' do
+      it 'adds the disc to the lowest free space' do
+        disc = '🔵'
+        col = 2
+        row = new_board.board.length - 1
+        3.times do 
+          new_board.update_board(disc, col, row)
+          row -= 1
+        end
+        expect(new_board.board[row + 1][col - 1]).to eq(disc)
+      end
+    end
+  end
 end
