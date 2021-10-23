@@ -8,6 +8,7 @@ class Game
 
   def initialize
     @board = GameBoard.new
+    @round = 1
     @winner = false
     @player1 = Hash.new
     @player2 = Hash.new
@@ -15,8 +16,12 @@ class Game
   end
 
   def play_game
-    introduction
+    #introduction
     ask_info
+    @turn = [@player1, @player2].sample
+    #play_round until @winner
+    8.times { play_round }
+    summary
   end
 
   def ask_info
@@ -33,17 +38,25 @@ class Game
   end
 
   def play_round
-
+    puts "\n\e[34m════════ Round #{@round} ═══════\e[0m\n\n"
+    puts "#{@turn[:name]}'s turn.\n\n"
+    @board.display_board
+    puts 'Enter a column to drop in your disc:'
+    make_move
+    @round += 1
+    @turn = @turn == @player1 ? @player2 : @player1 unless @winner
   end
 
   def make_move
     loop do
       col = player_move
+      col -= 1
       row = @board.find_space(col)
       unless row.nil?
-        @board.board_update('🔵', col, row)
+        @board.update_board(@turn[:disc], col, row)
         break
       end
+      puts "\e[31mWhoops! Column #{col + 1} is full!\e[0m"
     end
   end
 
@@ -59,6 +72,12 @@ class Game
 
   def verify_move(move, taken, min = 1, max = 7)
     return move if move.between?(min, max) && move != taken
+  end
+
+  def summary
+    puts "\n\e[31m═══════ Game Over ══════\e[0m\n\n"
+    @board.display_board
+    puts "\nCongrats! #{@turn[:name]} wins!\n\n"
   end
 
   private
