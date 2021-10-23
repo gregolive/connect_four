@@ -117,4 +117,28 @@ describe GameBoard do
       end
     end
   end
+
+  describe '#winner?' do
+    subject(:board_winner) { described_class.new }
+
+    context 'when no player has 4 discs in a row' do
+      it 'returns false' do
+        disc = '🔵'
+        expect(board_winner.winner?(disc)).to be_falsy
+      end
+    end
+
+    context 'when a player has 4 discs in a row' do
+      it 'returns true' do
+        disc = '🔵'
+        col = 2
+        row = board_winner.board.length - 1
+        4.times do 
+          board_winner.update_board(disc, col, row)
+          row -= 1
+        end
+        expect(board_winner.winner?(disc)).to be_truthy
+      end
+    end
+  end
 end
