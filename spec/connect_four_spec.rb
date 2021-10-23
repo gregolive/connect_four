@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# Comment out play_game from #initialize in Game class to test
+
 require_relative '../lib/connect_four.rb'
 require_relative '../lib/game.rb'
 
@@ -138,6 +140,38 @@ describe GameBoard do
           row -= 1
         end
         expect(board_winner.winner?(disc)).to be_truthy
+      end
+    end
+  end
+
+  describe '#diagonals_from_right' do
+    subject(:board_winner) { described_class.new([[1, 2, 3], [11, 12, 13], [21, 22, 23]]) }
+
+    context 'when given a grid-like embedded array' do
+      it 'returns the grid right to left diagonals' do
+        diagonal = [3, 12, 21]
+        expect(board_winner.diagonals_from_right).to include(diagonal)
+      end
+    end
+  end
+
+  describe '#diagonals_from_left' do
+    subject(:board_winner) { described_class.new([[1, 2, 3], [11, 12, 13], [21, 22, 23]]) }
+
+    context 'when given a grid-like embedded array' do
+      it 'returns the grid left to right diagonals' do
+        diagonal = [1, 12, 23]
+        expect(board_winner.diagonals_from_left).to include(diagonal)
+      end
+    end
+  end
+
+  describe '#delete_small_sections' do
+    context 'when given an embedded array' do
+      subject(:board_clean) { described_class.new([[1, 2, 3, 4], [1, 2, 3, 4, 5], [1, 2], [1, 2, 3], [1]])}
+      it 'removes the subarrays with less than 4 elements' do
+        result = [[1, 2, 3, 4], [1, 2, 3, 4, 5]]
+        expect(board_clean.delete_small_sections(board_clean.board)).to eq(result)
       end
     end
   end
